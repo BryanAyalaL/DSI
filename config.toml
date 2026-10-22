@@ -1,0 +1,25 @@
+# Configuración del proceso de consulta de cuentas médicas.
+# Todo lo que puede cambiar entre ambientes vive aquí, no en el código.
+
+[entrada]
+archivo = "cuentas.csv"
+columna = "id_cuenta"
+
+[salida]
+excel = "resultado_cuentas.xlsx"
+log = "proceso.log"
+
+[api]
+url_base = "https://jsonplaceholder.typicode.com/posts"
+timeout_segundos = 10
+
+[reintentos]
+# Reintentos DESPUÉS del primer intento: 3 => hasta 4 llamadas por ID.
+max_reintentos = 3
+# Espera creciente: 2 s, 4 s, 8 s (se duplica en cada reintento).
+espera_base_segundos = 2
+# Solo se reintenta lo que puede cambiar de respuesta.
+# 404 y los demás 4xx NO están aquí a propósito (ver README).
+codigos_reintentables = [429, 500, 502, 503, 504]
+
+# [estado] se agrega en el paso 3, cuando decidamos dónde guardarlo.
