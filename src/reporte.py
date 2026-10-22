@@ -55,15 +55,20 @@ def escribir_excel(tabla: pd.DataFrame, ruta: str) -> None:
     queda intacto en vez de quedar un archivo corrupto.
     """
     temporal = ruta + ".tmp.xlsx"
-    with pd.ExcelWriter(temporal, engine="openpyxl") as writer:
-        tabla.to_excel(writer, sheet_name="Resultados", index=False)
-        hoja = writer.sheets["Resultados"]
-        hoja.freeze_panes = "A2"               # encabezado fijo al bajar
-        hoja.auto_filter.ref = hoja.dimensions  # filtro en cada columna
-        for columna in hoja.columns:
-            ancho = max(len(str(c.value)) if c.value is not None else 0 for c in columna)
-            hoja.column_dimensions[columna[0].column_letter].width = min(ancho + 2, _ANCHO_MAX)
-    os.replace(temporal, ruta)  # reemplazo atómico
+    try:
+        with pd.ExcelWriter(temporal, engine="openpyxl") as writer:
+            tabla.to_excel(writer, sheet_name="Resultados", index=False)
+            hoja = writer.sheets["Resultados"]
+            hoja.freeze_panes = "A2"               # encabezado fijo al bajar
+            hoja.auto_filter.ref = hoja.dimensions  # filtro en cada columna
+            for columna in hoja.columns:
+                ancho = max(len(str(c.value)) if c.value is not None else 0 for c in columna)
+                hoja.column_dimensions[columna[0].column_letter].width = min(ancho + 2, _ANCHO_MAX)
+        os.replace(temporal, ruta)  # reemplazo atómico
+    finally:
+        # Si algo falló (ej. Excel abierto), no dejar el temporal tirado.
+        if os.path.exists(temporal):
+            os.remove(temporal)
 
 
 def armar_resumen(tabla: pd.DataFrame, lote: str, consultados_ahora: int) -> str:
