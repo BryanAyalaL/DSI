@@ -2,6 +2,10 @@
 venv/
 ENV/
 
-.xlsx
-.csv
+*.xlsx
+*.csv
 
+!cuentas.csv
+
+*.log
+__pycache__/
