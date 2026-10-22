@@ -22,4 +22,7 @@ espera_base_segundos = 2
 # 404 y los demás 4xx NO están aquí a propósito (ver README).
 codigos_reintentables = [429, 500, 502, 503, 504]
 
-# [estado] se agrega en el paso 3, cuando decidamos dónde guardarlo.
+[estado]
+# Base SQLite con el resultado de cada consulta. Es la fuente de verdad:
+# el Excel se regenera completo desde aquí en cada ejecución.
+archivo = "estado.sqlite3"

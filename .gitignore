@@ -9,3 +9,5 @@ ENV/
 
 *.log
 __pycache__/
+
+*.sqlite3
